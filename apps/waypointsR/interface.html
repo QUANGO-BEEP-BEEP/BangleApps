@@ -180,9 +180,9 @@
 			}
 			else
 			{
+				//this doesn't seem to do what I want - i.e. draw a line from the *previous* point to the mouse
 				let latlngs = [ [wps[editingroute].route[midrouteIndex].lat,wps[editingroute].route[midrouteIndex].lng], [e.latlng.lat, e.latlng.lng]];
 			}
-			
 			dynamicarrow.clearLayers();
 			L.polyline(latlngs, { color:'black'}).addTo(dynamicarrow);
 			L.featureGroup(getArrows(latlngs, 'black', 2, map)).addTo(dynamicarrow)
