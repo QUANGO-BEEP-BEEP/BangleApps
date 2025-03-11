@@ -221,7 +221,7 @@
 		{
 			if(midrouteIndex < arr.length-1)
 			{
-				arr.splice(midrouteIndex+1,0, {lat:lat, lon:lon, name:name});
+				arr.splice(midrouteIndex,0, {lat:lat, lon:lon, name:name});
 			}
 			else{arr.push({lat:lat, lon:lon, name:name});}
             renderAllWaypoints();
