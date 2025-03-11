@@ -1,6 +1,6 @@
 { "id": "waypointsR",
   "name": "WaypointsR",
-  "version": "0.10",
+  "version": "0.20",
   "description": "Provides 'waypoints.json' used by various navigation apps, as well as a way to edit it from the App Loader or from the device",
   "icon": "app.png",
   "tags": "tool,outdoors,gps",

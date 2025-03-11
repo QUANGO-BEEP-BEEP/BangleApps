@@ -118,6 +118,8 @@
         var searchresult = L.layerGroup();
         var dynamicarrow = L.layerGroup();
         var editingroute = null;
+		var addingMidroutePoint = false;
+		var midrouteIndex = -1;
         var lastroutepoint;
 
         /*** map ***/
@@ -144,9 +146,19 @@
 
         map.on('click', function(e) {
             if (editingroute != null) {
-                searchresult.clearLayers();
-                addWaypoint(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "");
-            } else {
+				if(addingMidroutePoint == false)
+				{
+					searchresult.clearLayers();
+					addWaypoint(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "");
+				}
+				else if (midrouteIndex > -1)
+				{
+					searchresult.clearLayers();
+					addWaypointAfter(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "",midrouteIndex);
+					addingMidroutePoint = false;
+				}
+            } 
+			else {
                 swal({
                     icon: 'info',
                     text: "Enter a name for the waypoint:",
@@ -196,6 +208,17 @@
             renderAllWaypoints();
             dirty();
         }
+		
+		function addWaypointAfter(arr, lat, lon, name,midrouteIndex) 
+		{
+			if(midrouteIndex < arr.length-1)
+			{
+				arr.splice(midrouteIndex,0, {lat:lat, lon:lon, name:name});
+			}
+			else{arr.push({lat:lat, lon:lon, name:name});}
+            renderAllWaypoints();
+            dirty();
+        }
 
         function deleteWaypoint(arr, i) {
             arr.splice(i, 1);
@@ -229,7 +252,7 @@
 
                 if (isroute) {
                     L.marker([wps[i].lat, wps[i].lon], {title: wps[i].name})
-                        .bindPopup(`<h4><b>${wps[i].name}</b> <a class="btn btn-primary" href="javascript:renameWaypoint(waypoints[${parentidx}].route,${i})"><i class="icon icon-edit"></i></a> <a class="btn btn-error" href="javascript:deleteWaypoint(waypoints[${parentidx}].route, ${i})"><i class="icon icon-delete"></i></a></h4><button class="btn btn-sm btn-error" onclick="javascript:deleteEntireRoute(${parentidx})">Delete entire route</button><button class="btn btn-sm btn-error" onclick="javascript:openRoute(${parentidx})">Edit route</button>`)
+                        .bindPopup(`<h4><b>${wps[i].name}</b> <a class="btn btn-primary" href="javascript:renameWaypoint(waypoints[${parentidx}].route,${i})"><i class="icon icon-edit"></i></a> <a class="btn btn-error" href="javascript:deleteWaypoint(waypoints[${parentidx}].route, ${i})"><i class="icon icon-delete"></i></a></h4><button class="btn btn-sm btn-error" onclick="javascript:deleteEntireRoute(${parentidx})">Delete entire route</button><button class="btn btn-sm btn-error" onclick="javascript:openRoute(${parentidx})">Continue route</button><button class="btn btn-sm btn-error" onclick="javascript:startAddingMidpoint(${parentidx},${i})">Add point after</button>`)
                         .addTo(mapmarkers);
                     latlngs.push([wps[i].lat, wps[i].lon]);
                     lastroutepoint = [wps[i].lat, wps[i].lon];
@@ -260,6 +283,15 @@
             map.on('contextmenu', closeRoute);
             renderAllWaypoints();
         }
+		
+		function startAddingMidpoint(i,pointIndex)
+		{
+			editingroute = i;
+			addingMidroutePoint = true;
+			midrouteIndex = pointIndex;
+			map.on('contextmenu', closeRoute);
+			renderAllWaypoints();
+		}
 
         function makeRoute(i) {
             waypoints[i].route = [{

@@ -6,3 +6,4 @@
 0.05: Implement navigation to waypoint
 0.06: Cleanups, minor tweaks
 0.10: Better navigation to waypoint
+0.20: Better editing of routes; addition of 'notes' field to points.
