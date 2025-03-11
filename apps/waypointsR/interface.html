@@ -174,11 +174,19 @@
         });
         map.on('mousemove', function(e) {
             if (editingroute == null) return;
-            let latlngs = [lastroutepoint, [e.latlng.lat, e.latlng.lng]];
-            dynamicarrow.clearLayers();
-            L.polyline(latlngs, { color:'black'}).addTo(dynamicarrow);
-            L.featureGroup(getArrows(latlngs, 'black', 2, map)).addTo(dynamicarrow)
-            map.addLayer(dynamicarrow);
+			if(addingMidroutePoint == false || midrouteIndex < 0)
+			{
+				let latlngs = [lastroutepoint, [e.latlng.lat, e.latlng.lng]];
+			}
+			else
+			{
+				let latlngs = [lastroutepoint, [e.latlng.lat, e.latlng.lng]];
+			}
+			
+			dynamicarrow.clearLayers();
+			L.polyline(latlngs, { color:'black'}).addTo(dynamicarrow);
+			L.featureGroup(getArrows(latlngs, 'black', 2, map)).addTo(dynamicarrow)
+			map.addLayer(dynamicarrow);
         });
         /*** status ***/
 
@@ -213,7 +221,7 @@
 		{
 			if(midrouteIndex < arr.length-1)
 			{
-				arr.splice(midrouteIndex,0, {lat:lat, lon:lon, name:name});
+				arr.splice(midrouteIndex+1,0, {lat:lat, lon:lon, name:name});
 			}
 			else{arr.push({lat:lat, lon:lon, name:name});}
             renderAllWaypoints();
