@@ -1,0 +1,18 @@
+{
+  "id": "wpmotoR",
+  "name": "Waypointer Moto R",
+  "shortName": "WPmoto R",
+  "version": "0.01",
+  "description": "Waypoint-based motorcycle navigation aid - with an R!",
+  "icon": "motoR.png",
+  "tags": "tool,outdoors,gps",
+  "supports": ["BANGLEJS2"],
+  "readme": "README.md",
+  "dependencies" : { "waypoints":"app" },
+  "storage": [
+    {"name":"wpmotoR.app.js","url":"app.js"},
+	{"name":"wpmotoR.settings.js","url":"settings.js"},
+    {"name":"wpmotoR.img","url":"icon.js","evaluate":true}
+  ],
+  "data":[{"name":"wpmotoR.settings.json"}]
+}
