@@ -5,78 +5,28 @@
   <body>
     <div id="data"></div>
 
-	<button type="button" id="import-pfx-button">Browse...</button>
-	<input type="file" id="file-input" />
+	<!-- <button type="button" id="import-pfx-button">Browse...</button> -->
+	<input type="file" id="file-input" /><br>
+	<button class="btn btn-default" id="processfile">Process</button>
 	<output id="list"></output>
+	<div id="outputDiv"></div>
 
     <script src="../../core/lib/interface.js"></script>
     <script>
 var dataElement = document.getElementById("data");
 var csvData = "";
 
-function getData() {
-  // show loading window
-  Util.showModal("Loading...");
-  // get the data
-  dataElement.innerHTML = "";
-  Util.readStorageFile(`gpspoilog.csv`,data=>{
-    csvData = data.trim();
-    // remove window
-    Util.hideModal();
-    // If no data, report it and exit
-    if (data.length==0) {
-      dataElement.innerHTML = "<b>No data found</b>";
-      return;
-    }
-    // Otherwise parse the data and output it as a table
-    dataElement.innerHTML = `<table>
-    <tr>
-      <th>Time</th>
-      <th>Lat</th>
-      <th>Lon</th>
-      <th>Alt</th>
-      <th>Type</th>
-    </tr>`+data.trim().split("\n").map(l=>{
-      l = l.split(",");
-      return `<tr>
-      <td>${(new Date(l[0]*1000)).toLocaleString()}</td>
-      <td>${l[1]}</td>
-      <td>${l[2]}</td>
-      <td>${l[3]}</td>
-      <td>${l[4]}</td>
-      </tr>`
-    }).join("\n")+"</table>";
-  });
-}
-
-function handleFileSelect (e) {
-    var files = e.target.files;
-    if (files.length < 1) {
-        alert('select a file...');
-        return;
-    }
-    var file = files[0];
-    var reader = new FileReader();
-    reader.onload = onFileLoaded;
-    reader.readAsDataURL(file);
-}
-
-function onFileLoaded (e) {
-    var match = /^data:(.*);base64,(.*)$/.exec(e.target.result);
-    if (match == null) {
-        throw 'Could not parse result'; // should not happen
-    }
-    var mimeType = match[1];
-    var content = match[2];
-    alert(mimeType);
-    alert(content);
-}
-
-$(function () {
-    $('#import-pfx-button').click(function(e) {
-        $('#file-input').click();
-    });
-    $('#file-input').change(handleFileSelect);
+document.getElementById("processfile").addEventListener("click", function() {
+  document.getElementById("outputDiv").innerHTML = document.getElementById("file-input").files.length;
+  
+  var file = document.getElementById("file-input").files[0];
+  if(file)
+  {
+		var reader = new FileReader();
+		reader.readAsText(file,"UTF-8");
+		reader.onload = function (evt) {document.getElementById("outputDiv").innerHTML = evt.target.result;}
+		reader.onerror = function (evt) {document.getElementById("outputDiv").innerHTML = "FUNCTION BAD";}
+  }
 });
 
 // You can call a utility function to save the data
