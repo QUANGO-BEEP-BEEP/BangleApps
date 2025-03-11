@@ -1,8 +1,8 @@
-# WP Moto R
+# Waypointer Moto R
 
-WP Moto R is a fork of Waypointer Moto with a few additional features for longer-range touring.
+Waypointer Moto R is a fork of [Waypointer Moto](https://github.com/espruino/BangleApps/tree/master/apps/wpmoto) by [James Stanley](https://incoherency.co.uk/) with a few additional touring-oriented features.
 
-To quote:
+To quote the inimitable original:
 
 >Waypointer Moto is a GPS navigation aid intended to be attached to
 the handlebars of a motorcycle.
@@ -10,7 +10,7 @@ It uses the GPS to find out which direction it's
 travelling and shows the direction and distance to the destination
 "as the crow flies". It gives you an indication of where to go,
 but exploring and navigating the environment is left up to the user.
-
+>
 >(Please note that it would be foolish in the extreme to rely on this
 as your only navigation aid! Make sure you read this entire document
 before using the app for navigation so that you know the drawbacks
