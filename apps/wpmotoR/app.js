@@ -347,7 +347,7 @@ function mainScreen() {
 	  //print('updown' + v);
     if (v === undefined) 
     {
-      if(wp.route)
+      if(wp.route && wp.route[routeidx].notes)
       {
         candraw = true;
         //show roadbook for 5 seconds
