@@ -7,7 +7,6 @@
   "icon": "gpx2wp.png",
   "tags": "tool,outdoors,gps",
   "supports": ["BANGLEJS","BANGLEJS2"],
-  "screenshots": [{"url":"screenshot.png"},{"url":"screenshot-menu.png"},{"url":"screenshot-delete.png"}],
   "readme": "README.md",
   "dependencies" : { "waypoints":"app" },
   "interface":"interface.html",
