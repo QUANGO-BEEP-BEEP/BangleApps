@@ -7,9 +7,9 @@
   "supports" : ["BANGLEJS","BANGLEJS2"],
   "readme": "README.md",
   "interface": "interface.html",
-  "storage": [ 
+  "storage": [
     {"name":"waypointsR.app.js","url":"app.js"},
-    {"name":"waypointsR.img","url":"app-icon.js","evaluate":true},
+    {"name":"waypointsR.img","url":"app-icon.js","evaluate":true}
   ],
   "data": [
     {"name":"waypoints.json","url":"waypoints.json"},
