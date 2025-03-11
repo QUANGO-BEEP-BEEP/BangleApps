@@ -4,9 +4,7 @@
   </head>
   <body>
     <div id="data"></div>
-    <button class="btn btn-default" id="btnSave">Save</button>
-    <button class="btn btn-default" id="btnDelete">Delete</button>
-	
+
 	<button type="button" id="import-pfx-button">Browse...</button>
 	<input type="file" id="file-input" />
 	<output id="list"></output>
@@ -90,7 +88,7 @@ document.getElementById("btnDelete").addEventListener("click", function() {
   Util.showModal("Deleting...");
   Util.eraseStorageFile("gpspoilog.csv", function() {
     Util.hideModal();
-    getData();
+    //getData();
   });
 });
 // Called when app starts
