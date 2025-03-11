@@ -10,36 +10,42 @@
 	<button class="btn btn-default" id="processfile">Process</button>
 	<output id="list"></output>
 	<div id="outputDiv"></div>
+	<button class="btn btn-default" id="uploadfile">Upload</button>
 
     <script src="../../core/lib/interface.js"></script>
     <script>
 var dataElement = document.getElementById("data");
 var csvData = "";
+var fileUploaded = false;
+var fileContents = "";
 
 document.getElementById("processfile").addEventListener("click", function() {
-  document.getElementById("outputDiv").innerHTML = document.getElementById("file-input").files.length;
+  //document.getElementById("outputDiv").innerHTML = document.getElementById("file-input").files.length;
   
   var file = document.getElementById("file-input").files[0];
   if(file)
   {
 		var reader = new FileReader();
 		reader.readAsText(file,"UTF-8");
-		reader.onload = function (evt) {document.getElementById("outputDiv").innerHTML = evt.target.result;}
+		reader.onload = function (evt) {readNewWaypoints(evt.target.result);}
 		reader.onerror = function (evt) {document.getElementById("outputDiv").innerHTML = "FUNCTION BAD";}
   }
 });
 
-// You can call a utility function to save the data
-document.getElementById("btnSave").addEventListener("click", function() {
-  Util.saveCSV("gpsdata", csvData);
-});
+function readNewWaypoints(contents)
+{
+	document.getElementById("outputDiv").innerHTML = contents;
+	fileUploaded = true;
+	fileContents = contents;
+}
+
 // Or you can also delete the file
-document.getElementById("btnDelete").addEventListener("click", function() {
-  Util.showModal("Deleting...");
-  Util.eraseStorageFile("gpspoilog.csv", function() {
-    Util.hideModal();
-    //getData();
-  });
+document.getElementById("uploadfile").addEventListener("click", function() {
+  if(fileUploaded)
+  {
+	  Util.showModal("Uploading...");
+	  Util.writeStorage("waypoints.json",fileContents,function(){Util.hideModal()});
+  }
 });
 // Called when app starts
 function onInit() {
