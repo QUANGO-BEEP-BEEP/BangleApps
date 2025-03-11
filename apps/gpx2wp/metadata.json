@@ -1,0 +1,18 @@
+{
+  "id": "gpx2wp",
+  "name": "GPX 2 Waypoint",
+  "shortName": "GPX2WP",
+  "version": "0.01",
+  "description": "Update waypoints.json via a GPX file.",
+  "icon": "gpx2wp.png",
+  "tags": "tool,outdoors,gps",
+  "supports": ["BANGLEJS","BANGLEJS2"],
+  "screenshots": [{"url":"screenshot.png"},{"url":"screenshot-menu.png"},{"url":"screenshot-delete.png"}],
+  "readme": "README.md",
+  "dependencies" : { "waypoints":"app" },
+  "interface":"interface.html",
+  "storage": [
+    {"name":"gpx2wp.app.js","url":"app.js"},
+    {"name":"gpx2wp.img","url":"icon.js","evaluate":true}
+  ],
+}
