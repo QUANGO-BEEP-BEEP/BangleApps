@@ -212,7 +212,7 @@
         /*** waypoints ***/
 
         function addWaypoint(arr, lat, lon, name) {
-            arr.push({lat:lat, lon:lon, name:name});
+            arr.push({lat:lat, lon:lon, name:name, notes:""});
             renderAllWaypoints();
             dirty();
         }
@@ -250,6 +250,20 @@
             dirty();
         }
 
+	function addNote(arr, i) {
+	    var defaultNotes = "";
+	    if(arr[i].notes != null)
+		{
+			defaultNotes = arr[i].notes;
+		}
+            var notes = prompt("Enter new name for the waypoint:", defaultNotes);
+            if (notes == null || notes == "" || note == arr[i].notes)
+                return;
+            arr[i].notes = notes;
+            renderAllWaypoints();
+            dirty();
+        }
+
         function renderWaypointsMap(wps, isroute, parentidx) {
             var latlngs = [];
             for (var i = 0; i < wps.length; i++) {
@@ -262,7 +276,7 @@
 
                 if (isroute) {
                     L.marker([wps[i].lat, wps[i].lon], {title: wps[i].name})
-                        .bindPopup(`<h4><b>${wps[i].name}</b> <a class="btn btn-primary" href="javascript:renameWaypoint(waypoints[${parentidx}].route,${i})"><i class="icon icon-edit"></i></a> <a class="btn btn-error" href="javascript:deleteWaypoint(waypoints[${parentidx}].route, ${i})"><i class="icon icon-delete"></i></a></h4><button class="btn btn-sm btn-error" onclick="javascript:deleteEntireRoute(${parentidx})">Delete entire route</button><button class="btn btn-sm btn-error" onclick="javascript:openRoute(${parentidx})">Continue route</button><button class="btn btn-sm btn-error" onclick="javascript:startAddingMidpoint(${parentidx},${i})">Add point before</button>`)
+                        .bindPopup(`<h4><b>${wps[i].name}</b> <a class="btn btn-primary" href="javascript:renameWaypoint(waypoints[${parentidx}].route,${i})"><i class="icon icon-edit"></i></a><a class="btn btn-primary" href="javascript:addNote(waypoints[${parentidx}].route,${i})"><i class="icon icon-mail"></i></a> <a class="btn btn-error" href="javascript:deleteWaypoint(waypoints[${parentidx}].route, ${i})"><i class="icon icon-delete"></i></a></h4><button class="btn btn-sm btn-error" onclick="javascript:deleteEntireRoute(${parentidx})">Delete entire route</button><button class="btn btn-sm btn-error" onclick="javascript:openRoute(${parentidx})">Continue route</button><button class="btn btn-sm btn-error" onclick="javascript:startAddingMidpoint(${parentidx},${i})">Add point before</button>`)
                         .addTo(mapmarkers);
                     latlngs.push([wps[i].lat, wps[i].lon]);
                     lastroutepoint = [wps[i].lat, wps[i].lon];
