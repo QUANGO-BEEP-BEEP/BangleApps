@@ -99,7 +99,7 @@ function formatDistance(meters)
 {
 	if(meters > unit_threshold) //keep it to three numerals
 	{
-		var places = 3; //less than 10: two decimal places
+		var places = 2; //less than 10: two decimal places
 		if( (meters/unit_threshold) >= 10) { places = 2; } //less than 100: 1 decimal place
 		if( (meters/unit_threshold) >= 100){places = 1; } //more than 100: 0 decimal places
 		return loc.distance(meters,places);
