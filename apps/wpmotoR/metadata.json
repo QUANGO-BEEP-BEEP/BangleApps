@@ -2,7 +2,7 @@
   "id": "wpmotoR",
   "name": "Waypointer Moto R",
   "shortName": "WPmoto R",
-  "version": "0.01",
+  "version": "0.05",
   "description": "Waypoint-based motorcycle navigation aid - with an R!",
   "icon": "motoR.png",
   "tags": "tool,outdoors,gps",
