@@ -149,12 +149,12 @@
 				if(addingMidroutePoint == false)
 				{
 					searchresult.clearLayers();
-					addWaypoint(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "");
+					addWaypoint(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "","");
 				}
 				else if (midrouteIndex > -1)
 				{
 					searchresult.clearLayers();
-					addWaypointAfter(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "",midrouteIndex);
+					addWaypointAfter(waypoints[editingroute].route, e.latlng.lat, e.latlng.lng, "","",midrouteIndex);
 					addingMidroutePoint = false;
 				}
             } 
@@ -167,7 +167,7 @@
                 }).then((name) => {
                     if (name != null && name != "") {
                         searchresult.clearLayers();
-                        addWaypoint(waypoints, e.latlng.lat, e.latlng.lng, name);
+                        addWaypoint(waypoints, e.latlng.lat, e.latlng.lng, name,"");
                     }
                 });
             }
@@ -211,20 +211,20 @@
 
         /*** waypoints ***/
 
-        function addWaypoint(arr, lat, lon, name) {
-            arr.push({lat:lat, lon:lon, name:name, notes:""});
+        function addWaypoint(arr, lat, lon, name,notes) {
+            arr.push({lat:lat, lon:lon, name:name, notes:notes});
             renderAllWaypoints();
             dirty();
         }
 		
-		function addWaypointAfter(arr, lat, lon, name,midrouteIndex) 
+		function addWaypointAfter(arr, lat, lon, name,notes,midrouteIndex) 
 		{
 			if(editingroute == null) return;
 			if(midrouteIndex < arr.length-1)
 			{
-				arr.splice(midrouteIndex,0, {lat:lat, lon:lon, name:name});
+				arr.splice(midrouteIndex,0, {lat:lat, lon:lon, name:name,notes:notes});
 			}
-			else{arr.push({lat:lat, lon:lon, name:name});}
+			else{arr.push({lat:lat, lon:lon, name:name,notes:notes});}
             renderAllWaypoints();
 			closeRoute();
             dirty();
@@ -256,8 +256,8 @@
 		{
 			defaultNotes = arr[i].notes;
 		}
-            var notes = prompt("Enter new name for the waypoint:", defaultNotes);
-            if (notes == null || notes == "" || note == arr[i].notes)
+            var notes = prompt("Enter notes for the waypoint:", defaultNotes);
+            if (notes == null || notes == "" || notes == arr[i].notes)
                 return;
             arr[i].notes = notes;
             renderAllWaypoints();
