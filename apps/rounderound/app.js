@@ -12,5 +12,5 @@ var messageListener = Bangle.on("message", (type, message)=>{
 
 function main()
 {
-	E.showMessage("My\nSimple\nApp","My App");
+	E.showMessage("My\nSimple\nApp","penis LOL");
 }
