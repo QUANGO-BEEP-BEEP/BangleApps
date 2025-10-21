@@ -12,3 +12,5 @@ function main()
 {
 	E.showMessage("My\nSimple\nApp","penis LOL");
 }
+
+main();
