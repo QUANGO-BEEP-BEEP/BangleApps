@@ -8,9 +8,11 @@
   message.handled = true;
 });*/
 
-function main()
+/*function main()
 {
 	E.showMessage("My\nSimple\nApp","penis LOL");
 }
 
-main();
+main();*/
+
+E.showMessage("My\nSimple\nApp","penis LOL");
