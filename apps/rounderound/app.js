@@ -1,1 +1,5 @@
-E.showMessage("hello world","hello world");
+function main(){
+	E.showMessage("hello world","hello world");
+}
+
+main();
