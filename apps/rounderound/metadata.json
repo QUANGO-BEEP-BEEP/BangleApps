@@ -1,7 +1,7 @@
 { "id": "rounderound",
   "name": "roundEround",
   "shortName":"rndErnd",
-  "icon": "app.png",
+  "icon": "rounderound.png",
   "version":"0.01",
   "author":"QUANGO-BEEP-BEEP",
   "description": "Improved motorcycle-focused UI for navigation instructions.",
