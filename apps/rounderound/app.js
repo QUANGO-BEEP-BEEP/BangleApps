@@ -1,5 +1,6 @@
-
-//var file = require("Storage").open("gpspoilog.md","a");
+var logToFile = false;
+var file;
+if(logToFile == true) {file = require("Storage").open("gpspoilog.md","a");}
 
 //drawing
 var W = g.getWidth();
@@ -17,7 +18,7 @@ var L = { // banglejs1
   text: {
     bufh: 40,
     bufy: 200,
-    largesize: 18,
+    largesize: 20,
     smallsize: 15,
     waypointy: 20,
   },
@@ -35,14 +36,44 @@ if (W == 176) {
     text: {
       bufh: 40,
       bufy: 142,
-      largesize: 18,
+      largesize: 20,
       smallsize: 14,
       waypointy: 20,
     },
   };
 }
 
+var carIsRHD = false;
+
+function switchInstructionImage(lastAction) //stolen from messages
+{
+	var img;
+	switch (lastAction) {
+	case "continue": img = "EBgBAIABwAPgD/Af+D/8f/773/PPY8cDwAPAA8ADwAPAA8AAAAPAA8ADwAAAA8ADwAPA";break;
+	case "left": img = "GhcBAYAAAPAAAHwAAD4AAB8AAA+AAAf//8P///x///+PAAPx4AA8fAAHD4ABwfAAcDwAHAIABwAAAcAAAHAAABwAAAcAAAHAAABwAAAc";break;
+  case "right": img = "GhcBAABgAAA8AAAPgAAB8AAAPgAAB8D///j///9///+/AAPPAAHjgAD44AB8OAA+DgAPA4ABAOAAADgAAA4AAAOAAADgAAA4AAAOAAAA";break;
+  case "left_slight": img = "ERgB//B/+D/8H4AP4Af4A74Bz4Dj4HD4OD4cD4AD4ADwADwADgAHgAPAAOAAcAA4ABwADgAH";break;
+  case "right_slight": img = "ERgBB/+D/8H/4APwA/gD/APuA+cD44Phw+Dj4HPgAeAB4ADgAPAAeAA4ABwADgAHAAOAAcAA";break;
+  case "left_sharp": img = "GBaBAAAA+AAB/AAH/gAPjgAeBwA8BwB4B+DwB+HgB+PAB+eAB+8AB+4AB/wAB/gAB//gB//gB//gBwAABwAABwAABwAABw=="; break;
+  case "right_sharp": img = "GBaBAB8AAD+AAH/gAHHwAOB4AOA8AOAeAOAPB+AHh+ADx+AB5+AA9+AAd+AAP+AAH+AH/+AH/+AH/+AAAOAAAOAAAOAAAA==";break;
+  case "keep_left": img = "ERmBAACAAOAB+AD+AP+B/+H3+PO+8c8w4wBwADgAHgAPAAfAAfAAfAAfAAeAAeAAcAA8AA4ABwADgA==";break;
+  case "keep_right": img = "ERmBAACAAOAA/AD+AP+A//D/fPueeceY4YBwADgAPAAeAB8AHwAfAB8ADwAPAAcAB4ADgAHAAOAAAA==";break;
+  case "uturn_left": img = "GRiBAAAH4AAP/AAP/wAPj8APAfAPAHgHgB4DgA8BwAOA4AHAcADsOMB/HPA7zvgd9/gOf/gHH/gDh/gBwfgA4DgAcBgAOAAAHAAADgAABw==";break;
+  case "uturn_right": img = "GRiBAAPwAAf+AAf/gAfj4AfAeAPAHgPADwHgA4DgAcBwAOA4AHAcBjhuB5x/A+57gP99wD/84A/8cAP8OAD8HAA4DgAMBwAAA4AAAcAAAA==";break;
+  case "finish": img = "HhsBAcAAAD/AAAH/wAAPB4AAeA4AAcAcAAYIcAA4cMAA48MAA4cMAAYAcAAcAcAAcA4AAOA4AAOBxjwHBzjwHjj/4Dnn/4B3P/4B+Pj4A8fj8Acfj8AI//8AA//+AA/j+AB/j+AB/j/A";break;
+  case "roundabout_left": img = carIsRHD ? "HBaCAAADwAAAAAAAD/AAAVUAAD/wABVVUAD/wABVVVQD/wAAVABUD/wAAVAAFT/////wABX/////8AAF//////AABT/////wABUP/AAD/AAVA/8AA/8AVAD/wAD//VQAP/AAP/1QAA/wAA/9AAADwAAD/AAAAAAAA/wAAAAAAAP8AAAAAAAD/AAAAAAAA/wAAAAAAAP8AAAAAAAD/AA=" : "HRYCAAPAAAAAAAAD/AAD//AAA/8AD///AAP/AA////AD/wAD/wP/A/8AA/wAP8P/////AAP//////8AA///////AAD/P////8AAP8P/AABUAD/AP/AAFUA/8AP/AAFX//AAP/AAFf/wAAP8AAB/8AAAPAAAD8AAAAAAAAPwAAAAAAAA/AAAAAAAAD8AAAAAAAAPwAAAAAAAA/AAAAAAAAD8AAA==";break;
+  case "roundabout_right": img = carIsRHD ? "HRaCAAAAAAAA8AAAP/8AAP8AAD///AA/8AA////AA/8AP/A/8AA/8A/wAP8AA/8P8AA/////8/wAD///////AAD//////8AAP////8P8ABUAAP/A/8AVQAD/wA//1UAA/8AA//VAAP/AAA/9AAA/wAAAPwAAA8AAAA/AAAAAAAAD8AAAAAAAAPwAAAAAAAA/AAAAAAAAD8AAAAAAAAPwAAAAAAA=" : "HBYCAAAAAAPAAABVQAAP8AAFVVQAD/wAFVVVAAP/ABUAFQAA/8BUAAVAAD/wVAAP/////FAAD/////9QAA//////VAAP/////FQAP8AAP/AVAP/AAP/AFX//AAP/AAV//AAP/AAAf/AAD/AAAD/AAAPAAAA/wAAAAAAAP8AAAAAAAD/AAAAAAAA/wAAAAAAAP8AAAAAAAD/AAAAAAA==";break;
+  case "roundabout_straight": img = carIsRHD ? "EBuCAAADwAAAD/AAAD/8AAD//wAD///AD///8D/P8/z/D/D//A/wPzAP8AwA//UAA//1QA//9VA/8AFUP8AAVD8AAFQ/AABUPwAAVD8AAFQ/wABUP/ABVA//9VAD//VAAP/1AAAP8AAAD/AAAA/wAA==" : "EBsCAAPAAAAP8AAAP/wAAP//AAP//8AP///wP8/z/P8P8P/8D/A/MA/wDABf/wABX//ABV//8BVAD/wVAAP8FQAA/BUAAPwVAAD8FQAA/BUAA/wVQA/8BV//8AFf/8AAX/8AAA/wAAAP8AAAD/AA";break;
+  case "roundabout_uturn": img = carIsRHD ? "ICCBAAAAAAAAAAAAAAAAAAAP4AAAH/AAAD/4AAB4fAAA8DwAAPAcAADgHgAA4B4AAPAcAADwPAAAeHwAADz4AAAc8AAABPAAAADwAAAY8YAAPPPAAD73gAAf/4AAD/8AABf8AAAb+AAAHfAAABzwAAAcYAAAAAAAAAAAAAAAAAAAAAAA" : "ICABAAAAAAAAAAAAAAAAAAfwAAAP+AAAH/wAAD4eAAA8DwAAOA8AAHgHAAB4BwAAOA8AADwPAAA+HgAAHzwAAA84AAAPIAAADwAAAY8YAAPPPAAB73wAAf/4AAD/8AAAP+gAAB/YAAAPuAAADzgAAAY4AAAAAAAAAAAAAAAAAAAAAAA=";break;
+  }
+  return img;
+}
+
+var halfW = W/2.0;
+var halfH = H/2.0;
+
 var pal_bw = new Uint16Array([0x0000,0xffff,0xf800,0x0000],0,4); // black, white, red, black
+var pal_wb = new Uint16Array([0xffff,0x0000,0xf800,0x0000],0,4); // white, black, red, black
 var buf = Graphics.createArrayBuffer(240,160, 2, {msb:true});
 
 function flip() {
@@ -99,7 +130,7 @@ function GetNextStreetFromInstruction(passedInstr)
 		name = splitInstruction[1].trim();
 		return name;
 	}
-	return "??? road";
+	return "[Unk Road]";
 }
 
 function ShortenCommonTerms(passedMessage)
@@ -131,13 +162,13 @@ var myMessageListener = Bangle.on("message", (type, message)=>{
   //E.showMessage(`${message.action}\n${message.distance}\n${GetShortStreetName(message.instr)}`, `${message.t} ${type} ${message.title}`);
   UpdateNavVariables(message);
   // You can prevent the default `message` app from loading by setting `message.handled = true`:
-  file.write(JSON.stringify(message)+"\n");
+  if(logToFile == true) {file.write(JSON.stringify(message)+"\n");}
   draw();
   //print(message);
 });
 
 
-var lastRoadName = "[waiting for road]";
+var lastRoadName = "[Unk Road]";
 var lastDistance = "??? mi";
 var lastAction = "continue";
 
@@ -162,24 +193,48 @@ function main(){
 	draw();
 }
 
+function clearAndFill()
+{
+	g.clear();
+	g.setColor(0,0,0);
+	g.fillRect(0,0,W,H);
+}
+
+var topStringPos = 2;//L.text.largesize - 2;
+var bottomStringPos = H - topStringPos;
+
+var arrowBuf = Graphics.createArrayBuffer(W,H,1,{msb:true});
+
 function draw()
 {
-  buf.setColor(1);
-  buf.setFontAlign(0, -1);
-  buf.setFont("Vector",L.text.largesize);
-  buf.drawString(lastRoadName,0,0);
+  clearAndFill();
+ 
+  var actionImg = switchInstructionImage(lastAction);
+  //arrowBuf.setColor(1);
+  arrowBuf.drawImage(atob(actionImg),halfW,halfH,{scale:4,rotate:0}); //all this is so I don't have to re-encode the images as white-on-black
   
-  buf.setColor(1);
-  buf.setFontAlign(0, 1);
-  buf.setFont("Vector",L.text.largesize);
-  buf.drawString(lastDistance,0,0);
+  g.drawImage({width:W, height:H, bpp:1, buffer:arrowBuf.buffer,transparent:0,palette:pal_bw},0,0);
+  arrowBuf.clear();
   
-  buf.setColor(1);
-  buf.setFontAlign(0, 0);
-  buf.setFont("Vector",L.text.largesize);
-  buf.drawString(lastAction,0,0);
+    g.setColor(-1);
+  g.setFontAlign(0, -1);
+  g.setFont("Vector",L.text.largesize);
+  g.drawString(
+	g.wrapString(lastRoadName,W).join("\n")
+	,halfW,topStringPos);
   
-  flip();
+  g.setColor(-1);
+  g.setFontAlign(0, 1);
+  g.setFont("Vector",L.text.largesize);
+  g.drawString(lastDistance,halfW,bottomStringPos);
+  
+  //g.setColor(-1);
+  //g.setFontAlign(0, 0);
+  //g.setFont("Vector",L.text.largesize);
+  //g.drawString(lastAction,halfW,halfH);
+  //g.drawImage({width:16, height: 24, bpp:1,buffer:E.toArrayBuffer(atob(img)),transparent:0,palette:pal_bw},halfW,halfH,{scale:4,rotate:0});	
+  
+  //flip();
 }
 
 g.clear();
