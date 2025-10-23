@@ -18,8 +18,8 @@ var L = { // banglejs1
   text: {
     bufh: 40,
     bufy: 200,
-    largesize: 20,
-    smallsize: 15,
+    largesize: 32,
+    smallsize: 20,
     waypointy: 20,
   },
 };
@@ -36,8 +36,8 @@ if (W == 176) {
     text: {
       bufh: 40,
       bufy: 142,
-      largesize: 20,
-      smallsize: 14,
+      largesize: 32,
+      smallsize: 20,
       waypointy: 20,
     },
   };
@@ -95,14 +95,14 @@ function formatDistance(meters)
 		var places = 3; //less than 10: two decimal places
 		if( (meters/unit_threshold) >= 10) { places = 2; } //less than 100: 1 decimal place
 		if( (meters/unit_threshold) >= 100){places = 1; } //more than 100: 0 decimal places
-		return loc.distance(meters,places);
+		return loc.distance(meters,places).replace(unit_text,"\n"+unit_text);
 	}
 	else
 	{
 		//less than 1 mi/km; gotta roll our own formatting for decimal mi/km instead of ft/m
 		var string = meters/unit_threshold;
 		string = string.toFixed(2);
-		string = string + unit_text;
+		string = string + "\n" + unit_text;
 		return string;
 	}
 }
@@ -124,12 +124,28 @@ function convertDistanceToMiles(distanceString)
 function GetNextStreetFromInstruction(passedInstr)
 {
 	var name, splitInstruction;
-	if(passedInstr.includes("onto"))
+	if(passedInstr.includes("onto")) //of the type: [in about], turn X onto...
 	{
 		splitInstruction = passedInstr.split("onto");
 		name = splitInstruction[1].trim();
 		return name;
 	}
+	else if(passedInstr.includes("on")) //of the type: turn X on ... [rare but seems to happen with 'bear left' types
+	{
+		splitInstruction = passedInstr.split("on");
+		name = splitInstruction[1].trim();
+		return name;
+	}
+	else if(passedInstr.includes("Continue for")) //of the type: Continue for about 2 miles to  Metzerott Road
+	{
+		splitInstruction = passedInstr.split("to");
+		name = splitInstruction[1].trim();
+		return name;
+	}
+	else if(passedInstr.includes("trip is about")) //of the type: The trip is about 2 miles time is  5 minutes. 
+	{
+		return "!IGNORE!";
+	}		
 	return "[Unk Road]";
 }
 
@@ -169,19 +185,30 @@ var myMessageListener = Bangle.on("message", (type, message)=>{
 
 
 var lastRoadName = "[Unk Road]";
-var lastDistance = "??? mi";
+var lastDistance = "???\nmi";
+var lastDistanceRaw = 0.0;
 var lastAction = "continue";
 
 function UpdateNavVariables(messageArray)
 {
-	lastRoadName = GetShortStreetName(messageArray.instr);
+	var tmp = GetShortStreetName(messageArray.instr);
+	
+	if(tmp != "!IGNORE!")
+	{
+		lastRoadName = tmp;
+	}
 	lastDistance = convertDistanceToMiles(messageArray.distance);
 	lastAction = messageArray.action;
+	
+	lastDistanceRaw = convertStringMeterToNumerical(messageArray.distance);
 }
 
 function GetShortStreetName(passedInstr)
 {
 	var street = GetNextStreetFromInstruction(passedInstr);
+	if(street == "!IGNORE!") 
+	{return street;}
+	
 	return ShortenCommonTerms(street);
 }
 
@@ -201,7 +228,8 @@ function clearAndFill()
 }
 
 var topStringPos = 2;//L.text.largesize - 2;
-var bottomStringPos = H - topStringPos;
+var bottomStringPos = H - topStringPos - 2;
+var arrowL = 32;
 
 var arrowBuf = Graphics.createArrayBuffer(W,H,1,{msb:true});
 
@@ -211,22 +239,23 @@ function draw()
  
   var actionImg = switchInstructionImage(lastAction);
   //arrowBuf.setColor(1);
-  arrowBuf.drawImage(atob(actionImg),halfW,halfH,{scale:4,rotate:0}); //all this is so I don't have to re-encode the images as white-on-black
+  arrowBuf.drawImage(atob(actionImg),halfW-arrowL,halfH+16,{scale:4,rotate:0}); //all this is so I don't have to re-encode the images as white-on-black
   
   g.drawImage({width:W, height:H, bpp:1, buffer:arrowBuf.buffer,transparent:0,palette:pal_bw},0,0);
   arrowBuf.clear();
   
     g.setColor(-1);
   g.setFontAlign(0, -1);
-  g.setFont("Vector",L.text.largesize);
+  g.setFont("Vector",L.text.smallsize);
   g.drawString(
 	g.wrapString(lastRoadName,W).join("\n")
 	,halfW,topStringPos);
   
-  g.setColor(-1);
-  g.setFontAlign(0, 1);
+  if(lastDistanceRaw < unit_threshold/2){g.setColor(0xffc0);}
+  else{g.setColor(-1);}
+  g.setFontAlign(-1, 0);
   g.setFont("Vector",L.text.largesize);
-  g.drawString(lastDistance,halfW,bottomStringPos);
+  g.drawString(lastDistance,W-64,halfH);
   
   //g.setColor(-1);
   //g.setFontAlign(0, 0);
