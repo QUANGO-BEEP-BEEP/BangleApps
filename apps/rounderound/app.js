@@ -1,6 +1,15 @@
 var logToFile = false;
 var file;
-if(logToFile == true) {file = require("Storage").open("gpspoilog.md","a");}
+
+var isFileOpen = false;
+
+function openFile()
+{
+	file = require("Storage").open("gpspoilog.md","a");
+	isFileOpen = true;
+}
+
+if(logToFile == true) {openFile();}
 
 //drawing
 var W = g.getWidth();
@@ -146,7 +155,16 @@ function GetNextStreetFromInstruction(passedInstr)
 	{
 		return "!IGNORE!";
 	}		
-	return "[Unk Road]";
+	
+	handleUnhandledInstr(passedInstr);
+	
+	return passedInstr;
+}
+
+function handleUnhandledInstr(unhandledString)
+{
+	if(isFileOpen == false){openFile();}
+	file.write(unhandledString+"\n");
 }
 
 function ShortenCommonTerms(passedMessage)
