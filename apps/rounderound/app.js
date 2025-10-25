@@ -151,10 +151,18 @@ function GetNextStreetFromInstruction(passedInstr)
 		name = splitInstruction[1].trim();
 		return name;
 	}
-	else if(passedInstr.includes("trip is about")) //of the type: The trip is about 2 miles time is  5 minutes. 
+	else if(passedInstr.includes("trip is about") || passedInstr.includes("The trip is")) //of the type: The trip is (about) 2 miles time is  5 minutes. 
 	{
 		return "!IGNORE!";
-	}		
+	}
+	else if(passedInstr.includes("recalculated"))
+	{
+		return "recalculated....";
+	}
+	else if(passedInstr.includes("of a mile") || passedInstr.includes("after about")) //in about n miles, turn left (no street name)
+	{
+		return "!IGNORE!";
+	}
 	
 	handleUnhandledInstr(passedInstr);
 	
@@ -201,7 +209,7 @@ var myMessageListener = Bangle.on("message", (type, message)=>{
   //print(message);
 });
 
-
+var lastInstruction = "???";
 var lastRoadName = "[Unk Road]";
 var lastDistance = "???\nmi";
 var lastDistanceRaw = 0.0;
@@ -209,6 +217,8 @@ var lastAction = "continue";
 
 function UpdateNavVariables(messageArray)
 {
+	lastInstruction = messageArray.instr;
+	
 	var tmp = GetShortStreetName(messageArray.instr);
 	
 	if(tmp != "!IGNORE!")
