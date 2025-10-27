@@ -5,7 +5,8 @@
   "version":"0.01",
   "author":"QUANGO-BEEP-BEEP",
   "description": "Improved motorcycle-focused UI for navigation instructions.",
-  "tags": "",
+  "tags": "outdoor,gps",
+  "readme":"README.md",
   "supports": ["BANGLEJS2"],
   "storage": [
     {"name":"rounderound.app.js","url":"app.js"},
