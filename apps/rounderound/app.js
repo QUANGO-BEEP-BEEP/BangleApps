@@ -145,13 +145,13 @@ function GetNextStreetFromInstruction(passedInstr)
 		name = splitInstruction[1].trim();
 		return name;
 	}
-	else if(passedInstr.includes("Continue for")) //of the type: Continue for about 2 miles to  Metzerott Road
+	else if(passedInstr.includes("Continue")) //of the type: Continue for about 2 miles to  Metzerott Road
 	{
 		splitInstruction = passedInstr.split("to");
 		name = splitInstruction[1].trim();
 		return name;
 	}
-	else if(passedInstr.includes("trip is about") || passedInstr.includes("The trip is")) //of the type: The trip is (about) 2 miles time is  5 minutes. 
+	else if(passedInstr.includes("trip is about") || passedInstr.includes("trip is")) //of the type: The trip is (about) 2 miles time is  5 minutes. 
 	{
 		return "!IGNORE!";
 	}
@@ -183,6 +183,9 @@ function ShortenCommonTerms(passedMessage)
 	fixed = fixed.replace(/drive/ig,"Dr");
 	fixed = fixed.replace(/avenue/ig,"Ave");
 	fixed = fixed.replace(/place/ig, "Pl");
+	fixed = fixed.replace(/boulevard/ig,"Blvd");
+	fixed = fixed.replace(/parkway/ig,"Pkwy");
+	fixed = fixed.replace(/highway/ig,"Hwy");
 	
 	fixed = fixed.replace(/northeast/ig,"NE");
 	fixed = fixed.replace(/northwest/ig,"NW");
@@ -261,30 +264,65 @@ var arrowL = 32;
 
 var arrowBuf = Graphics.createArrayBuffer(W,H,1,{msb:true});
 
+var mode = "turn";//"turn" or "instr";
+var modeSwitchCooldown = false;
+
+//
+Bangle.SetUI("updown",function(dir){
+	if(modeSwitchCooldown) return;
+	
+	if(mode == "turn")
+	{
+		mode = "instr";
+	}
+	else
+	{
+		mode = "turn";
+	}
+	
+	modeSwitchCooldown = true;
+	setTimeout(function(){modeSwitchCooldown = false;},500);
+	
+	draw();
+});
+
+
 function draw()
 {
   clearAndFill();
  
-  var actionImg = switchInstructionImage(lastAction);
-  //arrowBuf.setColor(1);
-  arrowBuf.drawImage(atob(actionImg),halfW-arrowL,halfH+16,{scale:4,rotate:0}); //all this is so I don't have to re-encode the images as white-on-black
-  
-  g.drawImage({width:W, height:H, bpp:1, buffer:arrowBuf.buffer,transparent:0,palette:pal_bw},0,0);
-  arrowBuf.clear();
-  
-    g.setColor(-1);
-  g.setFontAlign(0, -1);
-  g.setFont("Vector",L.text.smallsize);
-  g.drawString(
+ if(mode == "turn")
+ {
+	var actionImg = switchInstructionImage(lastAction);
+	//arrowBuf.setColor(1);
+	arrowBuf.drawImage(atob(actionImg),halfW-arrowL,halfH+16,{scale:4,rotate:0}); //all this is so I don't have to re-encode the images as white-on-black
+
+	g.drawImage({width:W, height:H, bpp:1, buffer:arrowBuf.buffer,transparent:0,palette:pal_bw},0,0);
+	arrowBuf.clear();
+
+	g.setColor(-1);
+	g.setFontAlign(0, -1);
+	g.setFont("Vector",L.text.smallsize);
+	g.drawString(
 	g.wrapString(lastRoadName,W).join("\n")
 	,halfW,topStringPos);
-  
-  if(lastDistanceRaw < unit_threshold/2){g.setColor(0xffc0);}
-  else{g.setColor(-1);}
-  g.setFontAlign(-1, 0);
-  g.setFont("Vector",L.text.largesize);
-  g.drawString(lastDistance,W-64,halfH);
-  
+
+	if(lastDistanceRaw < unit_threshold/2){g.setColor(0xffc0);}
+	else{g.setColor(-1);}
+	g.setFontAlign(-1, 0);
+	g.setFont("Vector",L.text.largesize);
+	g.drawString(lastDistance,W-64,halfH);
+ }
+ else
+ {
+	g.setColor(-1);
+	g.setFontAlign(0, 0);
+	g.setFont("Vector",L.text.smallsize);
+	g.drawString(
+	g.wrapString(lastInstruction,W).join("\n")
+	,halfW,halfH);
+ }
+
   //g.setColor(-1);
   //g.setFontAlign(0, 0);
   //g.setFont("Vector",L.text.largesize);
